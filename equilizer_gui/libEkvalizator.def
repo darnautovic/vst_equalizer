@@ -1,0 +1,4 @@
+; c:\MinGW\bin\dlltool --base-file C:\Users\Dado\AppData\Local\Temp\cca02144.base --output-exp Ekvalizator.exp --dllname Ekvalizator.dll --output-def libEkvalizator.def --add-stdcall-alias --no-export-all-symbols --exclude-symbol=DllMainCRTStartup@12 --def Ekvalizator.def --output-lib libEkvalizator.a
+EXPORTS
+	main = VSTPluginMain @ 1
+	VSTPluginMain @ 2
