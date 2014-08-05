@@ -1,11 +1,3 @@
-//-------------------------------------------------------------------------------------------------------
-// 
-// Version 1.0		
-// Date: Akademska godina 2010/2011
-// Created by   : Damir Arnautovic
-// Description  : Primjer uporabe VST SDK na jednostavnom primjeru trofrekvencijskog ekvalizatora
-//
-//------
 
 #ifndef __Ekvalizator__
 #define __Ekvalizator__
@@ -71,32 +63,32 @@ public:												//Definiraju se javne metode dostupne drugim klasama (objekti
 	virtual void setProgram (VstInt32 program);
 	virtual bool getProgramNameIndexed (VstInt32 category, VstInt32 index, char* text);
 
-	virtual void calcCoeffs(float f, float g, float q); // Compute biquad coefficients.
-	virtual float calcFreq(float f); // Convert 0.0...1.0 --> 20 Hz... 20 kHz
-	virtual float calcGain(float g); // Convert 0.0...1.0 --> -12 dB...+12 dB
-	virtual float calcQ(float q); // Convert 0.0...1.0 --> 0.33... 12.0
+	virtual void calcCoeffs(float f, float g, float q); 
+	virtual float calcFreq(float f); 
+	virtual float calcGain(float g); 
+	virtual float calcQ(float q); 
 
-	// Metode i varijable kojima se moze pristupiti ali nisu promjenjive
+	
 
 protected:
 	EkvalizatorProgram* programs;
 
 	char programName[32];
 
-	float fFrequency; // 0.0 ... 1.0 Internal
-	float fdBGain; // 0.0 ... 1.0 parameter
-	float fQ; // 0.0 ... 1.0 format.
+	float fFrequency; 
+	float fdBGain; 
+	float fQ; 
 
-	float jFrequency; // 20 Hz ... 20 kHz GUI
-	float jdBGain; // -12 dB ... +12 dB parameter
-	float jQ; // 0.33 ... 12 format.
+	float jFrequency; 
+	float jdBGain; 
+	float jQ; 
 
-	float xnm1; // x[n-1]
-	float xnm2; // x[n-2]
-	float ynm1; // y[n-1]
-	float ynm2; // y[n-2]
+	float xnm1; 
+	float xnm2; 
+	float ynm1; 
+	float ynm2; 
 
-	float a0, a1, a2, b0, b1, b2; // The biquad coefficients.
+	float a0, a1, a2, b0, b1, b2; 
 
 	float frekvencija;
 	float faktorQ;

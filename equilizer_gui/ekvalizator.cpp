@@ -1,14 +1,5 @@
-//-------------------------------------------------------------------------------------------------------
-// 
-// Version 1.0	
-// Date: Akademska godina 2010/2011
-// Created by   : Damir Arnautovic
-// Description  : Primjer uporabe VST SDK na jednostavnom primjeru trofrekvencijskog ekvalizatora
-//
-//------
-
 #ifndef __Ekvalizator__ 
-#include "ekvalizator.h" // Provjera i ukljucivanje header datoteke
+#include "ekvalizator.h" 
 #include <cmath>
 #endif 
 
@@ -27,15 +18,15 @@ AudioEffect* createEffectInstance(audioMasterCallback audioMaster) {
 
 //-------------------------------------------------------------------------------------------------------
 //
-Ekvalizator::Ekvalizator(audioMasterCallback audioMaster) //SVE ISTO
+Ekvalizator::Ekvalizator(audioMasterCallback audioMaster) 
 :
 		AudioEffectX(audioMaster, 1, nNumParams) // PRESET, BROJ PARAMETARA (f3Band)
 {
-	setNumInputs(1); //  in
-	setNumOutputs(1); //  out
-	setUniqueID('Eq3'); // identify
-	canProcessReplacing(); // supports replacing output
-	vst_strncpy(programName, "Default", kVstMaxProgNameLen); // default program name
+	setNumInputs(1); 
+	setNumOutputs(1); 
+	setUniqueID('Eq3'); 
+	canProcessReplacing(); 
+	vst_strncpy(programName, "Default", kVstMaxProgNameLen); 
 
 	editor = new EkvalizatorEditor (this);
 	programs = new EkvalizatorProgram[numPrograms];
@@ -51,18 +42,18 @@ Ekvalizator::Ekvalizator(audioMasterCallback audioMaster) //SVE ISTO
 
 }
 
-// Destruktor
+
 Ekvalizator::~Ekvalizator() {
 }
 
 void Ekvalizator::calcCoeffs(float f, float g, float q) {
-	float A, omega, cs, sn, alpha; // Intermediate variables.
+	float A, omega, cs, sn, alpha; 
 	A = pow(10, calcGain(g) / 40.0f);
-	omega = (2 * M_PI * calcFreq(f)) / sampleRate; // M_PI macro holds value of pi.
+	omega = (2 * M_PI * calcFreq(f)) / sampleRate; 
 	sn = sin(omega);
 	cs = cos(omega);
 	alpha = sn / (2.0 * calcQ(q));
-	b0 = 1 + (alpha * A); // The filter coefficients.
+	b0 = 1 + (alpha * A); 
 	b1 = -2 * cs;
 	b2 = 1 - (alpha * A);
 	a0 = 1 + (alpha / (float) A);
@@ -96,7 +87,6 @@ float Ekvalizator::calcQ(float q) {
 
 EkvalizatorProgram::EkvalizatorProgram ()
 {
-	// default Program Values
 	float frekvencija;
 	float faktorQ;
 	float pojacanje;
@@ -253,22 +243,22 @@ void Ekvalizator::processReplacing(float** inputs, float** outputs,
 	((AEffGUIEditor*) editor)->setParameter(nFaktorQ, faktorQ);
 	((AEffGUIEditor*) editor)->setParameter(nPojacanje, pojacanje);
 
-	float *in = inputs[0]; // in points to the first sample in the input buffer.
-		float *out = outputs[0]; // out points to the first sample in the output buffer.
-		float xn, yn; // xn/yn holds current input/output sample.
+	float *in = inputs[0]; 
+		float *out = outputs[0]; 
+		float xn, yn; 
 		float sampleRate = updateSampleRate();
 
-		while (--sampleFrames >= 0) // Go through the buffers sample-by-sample.
+		while (--sampleFrames >= 0) 
 		{
-			xn = *in++; // Get xn from the input buffer.
+			xn = *in++; 
 
-			yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; // Biquad equation.
-			xnm2 = xnm1; // Shift x[n-1] to x[n-2].
-			xnm1 = xn; // Shift x[n] to x[n-1].
-			ynm2 = ynm1; // Shift y[n-1] to y[n-2].
-			ynm1 = yn; // Shift y[n] to y[n-1].
+			yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0;
+			xnm2 = xnm1; 
+			xnm1 = xn; 
+			ynm2 = ynm1; 
+			ynm1 = yn; 
 
-			(*out++) = (yn); // Put yn into the output buffer. (Overwrite)
+			(*out++) = (yn); 
 		}
 }
 
@@ -276,26 +266,26 @@ void Ekvalizator::processReplacing(float** inputs, float** outputs,
 
 void Ekvalizator::process(float** inputs, float** outputs,
 		VstInt32 sampleFrames) {
-		((AEffGUIEditor*) editor)->setParameter(nFrekvencija, frekvencija); //Set tremolo parameter on slider to vibrato parameter.
+		((AEffGUIEditor*) editor)->setParameter(nFrekvencija, frekvencija); 
 		((AEffGUIEditor*) editor)->setParameter(nFaktorQ, faktorQ);
 		((AEffGUIEditor*) editor)->setParameter(nPojacanje, pojacanje);
 
-			float *in = inputs[0]; // in points to the first sample in the input buffer.
-			float *out = outputs[0]; // out points to the first sample in the output buffer.
-			float xn, yn; // xn/yn holds current input/output sample.
+			float *in = inputs[0]; 
+			float *out = outputs[0]; 
+			float xn, yn; 
 			float sampleRate = updateSampleRate();
 
-			while (--sampleFrames >= 0) // Go through the buffers sample-by-sample.
+			while (--sampleFrames >= 0) 
 			{
-				xn = *in++; // Get xn from the input buffer.
+				xn = *in++; 
 
-				yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; // Biquad equation.
-				xnm2 = xnm1; // Shift x[n-1] to x[n-2].
-				xnm1 = xn; // Shift x[n] to x[n-1].
-				ynm2 = ynm1; // Shift y[n-1] to y[n-2].
-				ynm1 = yn; // Shift y[n] to y[n-1].
+				yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; 
+				xnm2 = xnm1; 
+				xnm1 = xn; 
+				ynm2 = ynm1; 
+				ynm1 = yn; 
 
-				(*out++) += (yn); // Put yn into the output buffer. (Overwrite)
+				(*out++) += (yn);
 			}
 }
 
