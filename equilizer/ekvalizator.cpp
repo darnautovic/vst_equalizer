@@ -3,7 +3,7 @@
 // Version 1.0	
 // Date: Akademska godina 2010/2011
 // Created by   : Damir Arnautovic
-// Description  : Primjer uporabe VST SDK na jednostavnom primjeru trofrekvencijskog Ekvalizatora
+// Description  : Primjer uporabe VST SDK na jednostavnom primjeru parametarskog Ekvalizatora
 //
 //------
 
@@ -26,8 +26,8 @@ Ekvalizator::Ekvalizator(audioMasterCallback audioMaster) //SVE ISTO
 {
 	setNumInputs(1); //  in
 	setNumOutputs(1); //  out
-	setUniqueID('Eq3'); // identify
-	canProcessReplacing(); // supports replacing output
+	setUniqueID('Eq3'); // identifikacija
+	canProcessReplacing(); // podrška 'replacing' izlaza
 	vst_strncpy(programName, "Default", kVstMaxProgNameLen); // default program name
 
 	frekvencija = 1.0;
@@ -41,13 +41,13 @@ Ekvalizator::~Ekvalizator() {
 }
 
 void Ekvalizator::calcCoeffs(float f, float g, float q) {
-	float A, omega, cs, sn, alpha; // Intermediate variables.
+	float A, omega, cs, sn, alpha; 
 	A = pow(10, g / 40.0f);
-	omega = (2 * M_PI * f) / sampleRate; // M_PI macro holds value of pi.
+	omega = (2 * M_PI * f) / sampleRate; 
 	sn = sin(omega);
 	cs = cos(omega);
 	alpha = sn / (2.0 * q);
-	b0 = 1 + (alpha * A); // The filter coefficients.
+	b0 = 1 + (alpha * A); 
 	b1 = -2 * cs;
 	b2 = 1 - (alpha * A);
 	a0 = 1 + (alpha / (float) A);
@@ -204,45 +204,44 @@ VstInt32 Ekvalizator::getVendorVersion() {
 // Implementacija ove metode je opcionalna
 void Ekvalizator::processReplacing(float** inputs, float** outputs,
 		VstInt32 sampleFrames) {
-	float *in = inputs[0]; // in points to the first sample in the input buffer.
-	float *out = outputs[0]; // out points to the first sample in the output buffer.
-	float xn, yn; // xn/yn holds current input/output sample.
+	float *in = inputs[0]; 
+	float *out = outputs[0];
+	float xn, yn; 
 	float sampleRate = updateSampleRate();
 
-	while (--sampleFrames >= 0) // Go through the buffers sample-by-sample.
+	while (--sampleFrames >= 0) 
 	{
-		xn = *in++; // Get xn from the input buffer.
+		xn = *in++; 
 
-		yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; // Biquad equation.
-		xnm2 = xnm1; // Shift x[n-1] to x[n-2].
-		xnm1 = xn; // Shift x[n] to x[n-1].
-		ynm2 = ynm1; // Shift y[n-1] to y[n-2].
-		ynm1 = yn; // Shift y[n] to y[n-1].
+		yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; 
+		xnm2 = xnm1; 
+		xnm1 = xn; 
+		ynm2 = ynm1; 
+		ynm1 = yn; 
 
-		(*out++) = (yn); // Put yn into the output buffer. (Overwrite)
+		(*out++) = (yn); 
 	}
 }
 
-// Ovu metodu je obavezno implementirati
 
 void Ekvalizator::process(float** inputs, float** outputs,
 		VstInt32 sampleFrames) {
-	float *in = inputs[0]; // in points to the first sample in the input buffer.
-	float *out = outputs[0]; // out points to the first sample in the output buffer.
-	float xn, yn; // xn/yn holds current input/output sample.
+	float *in = inputs[0]; 
+	float *out = outputs[0]; 
+	float xn, yn; 
 	float sampleRate = updateSampleRate();
 
-	while (--sampleFrames >= 0) // Go through the buffers sample-by-sample.
+	while (--sampleFrames >= 0) 
 	{
-		xn = *in++; // Get xn from the input buffer.
+		xn = *in++; 
 
-		yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; // Biquad equation.
-		xnm2 = xnm1; // Shift x[n-1] to x[n-2].
-		xnm1 = xn; // Shift x[n] to x[n-1].
-		ynm2 = ynm1; // Shift y[n-1] to y[n-2].
-		ynm1 = yn; // Shift y[n] to y[n-1].
+		yn = (b0 * xn + b1 * xnm1 + b2 * xnm2 - a1 * ynm1 - a2 * ynm2) / a0; 
+		xnm2 = xnm1; 
+		xnm1 = xn;
+		ynm2 = ynm1; 
+		ynm1 = yn; 
 
-		(*out++) += (yn); // Put yn into the output buffer. (Overwrite)
+		(*out++) += (yn); 
 	}
 }
 
